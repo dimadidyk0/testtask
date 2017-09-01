@@ -134,8 +134,6 @@ class Calendar extends Component {
 
   }
 
-  
-
   clearAll(e) {
     e.preventDefault();
     Object.keys(this.state.data).forEach(i => {
@@ -169,7 +167,6 @@ class Calendar extends Component {
     Object.keys(this.state.data).forEach(i => {
       this.filterData(i);
     })
-    console.log(this.state.data);
     localStorage.setItem('storage', JSON.stringify(this.state.data));    this.setState({
       data: this.state.data
     })
