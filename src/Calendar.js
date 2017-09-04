@@ -1,13 +1,27 @@
 import React, { Component } from 'react';
+import { createStore } from 'redux'
+import {connect} from 'react-redux'
+
+
+
 
 class Calendar extends Component {
   constructor() {
     super();
+
     this.state = {
       data: JSON.parse(localStorage.getItem('storage')),
       isActive: false
     };
   }
+
+
+
+  reducer(state = [], action) {
+    console.log(action);
+    return state;
+  }
+
 
   buildHours(props) {
     let hours = [];
@@ -70,20 +84,13 @@ class Calendar extends Component {
       let first = +choosen[0].getAttribute('data-count') ,
           last  = +choosen[choosen.length - 1].getAttribute('data-count') ;
 
-      this.state.data[day].push(this.hoursToMinutes(first, last))
-      this.setState({
-        data: this.state.data
-      })
+      this.props.store[day].push(this.hoursToMinutes(first, last))
+      this.props.setData(this.props.store);
+
+
       
       this.lastFocus();
       
-      // setTimeout( function() {
-      //   if (!parent.querySelector('[data-chosen=false]')) {
-      //     parent.parentNode.querySelector('a').classList.add('full-day')
-      //   } else {
-      //     parent.parentNode.querySelector('a').classList.remove('full-day');
-      //   }
-      // },200)
     }
   }
   
@@ -122,30 +129,28 @@ class Calendar extends Component {
     let parent = e.target.parentNode;
     let day = parent.getAttribute('data-day');
     if (parent.querySelector('[data-chosen=false]')) {
-      this.state.data[day][0] = this.hoursToMinutes(0,23);
-      // parent.querySelector('a').classList.add('full-day');
+      this.props.store[day][0] = this.hoursToMinutes(0,23);
     } else {
-      this.state.data[day] = [];
-      // parent.querySelector('a').classList.remove('full-day')      
+      this.props.store[day] = [];    
     }
-    this.setState({
-      data: this.state.data
-    })
+
+    this.props.setData(this.props.store);
+    
 
   }
+
+  
 
   clearAll(e) {
     e.preventDefault();
-    Object.keys(this.state.data).forEach(i => {
-      this.state.data[i] = [];
+    Object.keys(this.props.store).forEach(i => {
+      this.props.store[i] = [];
     });
-    this.setState({
-      data: this.state.data
-    })
+    this.props.setData(this.props.store);
   }
 
   filterData(day) {
-    let data = this.state.data[day];
+    let data = this.props.store[day];
     data.forEach( (i,x) => {
       data.forEach( (y,z) => {
         let s1 = i['bt'],
@@ -164,17 +169,18 @@ class Calendar extends Component {
 
   saveAll(e) {
     e.preventDefault();
-    Object.keys(this.state.data).forEach(i => {
+    Object.keys(this.props.store).forEach(i => {
       this.filterData(i);
     })
-    localStorage.setItem('storage', JSON.stringify(this.state.data));    this.setState({
-      data: this.state.data
+    Object.keys(this.props.store).forEach(i => {
+      this.filterData(i);
     })
+    this.props.setData(this.props.store);
+    localStorage.setItem('storage', JSON.stringify(this.props.store));    
   }
 
   render() {
-    
-    let props = this.state.data;
+    let props = this.props.store;
     return (
       <div className="calendar" onMouseLeave={this.lastFocus.bind(this)}>
         <div className="calendar__scale">
@@ -239,4 +245,18 @@ class Calendar extends Component {
   }
 }
 
-export default Calendar;
+export default connect(
+  state => ({
+    store: state
+  }),
+  dispatch => ({
+    setActive: (status) => {
+      dispatch({type: 'isActive', payload: status})
+    },
+    setData: (data) => {
+      dispatch({type: 'data', payload: data})
+    }
+  })
+)(Calendar);
+
+// export default Calendar;

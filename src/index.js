@@ -2,6 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import Calendar from './Calendar';
+import { createStore } from 'redux'
+import {Provider} from 'react-redux'
+
+
+
+
 
 var data = {
   "mo": [
@@ -36,10 +42,10 @@ var data = {
   ],
   "su": []
 };
- 
 
 var storage = localStorage.getItem('storage');
 let parsed;
+
 
 if (!storage) {
   localStorage.setItem('storage', JSON.stringify(data));
@@ -49,6 +55,33 @@ if (!storage) {
 }
 
 
-ReactDOM.render(<Calendar data={parsed}/>, document.getElementById('root'));
+const initialState = storage 
+  ? JSON.parse(storage)
+  : data;
+
+let store = createStore(reducer);
+
+store.subscribe( () => {
+  console.log('subscribe' , store.getState())
+})
+
+
+function reducer(state = initialState, action) {
+
+
+  if (action.type === 'data') {
+    return action.payload;
+  } else {
+    return state;
+  }
+}
+
+
+ReactDOM.render(
+  <Provider store={store}>
+    <Calendar data={parsed}/>
+  </Provider>, 
+  document.getElementById('root')
+);
 
 
