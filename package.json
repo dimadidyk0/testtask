@@ -2,13 +2,11 @@
   "name": "my-app",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://dimadidyk0.github.io/React-calendar/",
+  "homepage": "https://dimadidyk0.github.io/testtask/",
   "dependencies": {
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
-    "react-redux": "^5.0.6",
-    "react-scripts": "1.0.12",
-    "redux": "^3.7.2"
+    "react-scripts": "1.0.12"
   },
   "scripts": {
     "start": "react-scripts start",
