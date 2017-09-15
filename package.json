@@ -2,7 +2,7 @@
   "name": "my-app",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://dimadidyk0.github.io/testtask/",
+  "homepage": "https://dimadidyk0.github.io/React-calendar/",
   "dependencies": {
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
